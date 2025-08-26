@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -9,8 +14,13 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true
+}));
 app.use(express.json());
+
+app.get('/health', (_, res) => res.status(200).send('ok'));
 
 app.use('/api', authRoutes);
 app.use('/api', chatRoutes);
